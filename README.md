@@ -19,7 +19,6 @@ Some of the supported graph types are:
 The main function to call is this:
 
 ```lisp
-
 (defun plot-graph (points graph-type &rest rest &key filename (title "Auto-generated graph")
 		   x-label x2-label y-label y2-label cblabel z-label;; axis labels
 		   x-range y-range x2-range y2-range ;; axis ranges
