@@ -1,17 +1,12 @@
-;;; Copyright Benjamin E. Lambert, 2005-2011
-;;; All rights reserved
-;;; Please contact author regarding licensing and use:
+;;; Copyright Ben. Lambert
 ;;; ben@benjaminlambert.com
 
 (declaim (optimize (debug 3)))
 (in-package :gnuplot)
-(cl-user::file-summary "Plotting Gnuplot graphs")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;  Interface with OS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Interface with OS")
 
 (defparameter *environment-vars* nil
   "A list of environment variables that I copied from bash, to be used for gnuplot.")
@@ -42,10 +37,6 @@
 ;;;; Helper functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Helper functions")
-
-(cl-user::subsection "Printing data to stream/file")
-
 (defun print-gnuplot-grid-to-file (points file)
   "Print the gievn points to a gnuplot data file."
   (with-open-file (f file :direction :output :if-exists :supersede)
@@ -54,7 +45,6 @@
 (defun print-gnuplot-grid-to-stream (points stream &key (sort t) (n 1))
   "A helper function that prints a 'grid' of n-d points to the stream."
   (setf points (copy-seq points))
-  ;;(setf points (make-sequence 'list (length points) points))
   (when sort
     (setf points (sort points '< :key 'first)))
   (dotimes (i n)
@@ -62,8 +52,6 @@
 	 (format stream "~{~f ~}~%" p))
     (when (> n 1)
       (format stream "EOF~%"))))
-
-(cl-user::subsection "Transforming output graph to a specialized graph")
 
 (defun thumbnail (stream &key type (width 32) (height 20))
   "Print the gnuplot commands needed to make a thumbnail to the given stream."
@@ -129,12 +117,11 @@
     (format stream "fit f1(x) '-' using 1:2 via a1,b1~%")
     (print-gnuplot-grid-to-stream points stream)
     (format stream "EOF~%"))
-  ;;(format stream "set style data points pointtype 7~%")
+  (format stream "set style data points pointtype 7~%")
   (format stream "set style data points~%")
-  ;;(format stream "set pointtype 7~%")
+  (format stream "set pointtype 7~%")
   (format stream "set pointsize 1~%")
   (when thumbnail (thumbnail stream :type type))
-  ;;(format stream "plot '-' using 1:2 with points pointtype 7 pointsize 1 lc rgb \"blue\"")
   (format stream "plot '-' using 1:2 lc rgb \"blue\"")
   (when regression
     (format stream ", f1(x) title 'Linear regression' linecolor rgb 'red'")) ;; OR: ", f2(x) title 'Quadratic' linecolor rgb 'black'"
@@ -144,27 +131,21 @@
 ;;;; User interface functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "User interface functions")
-
 (defun plot-graph (points graph-type &rest rest &key filename (title "Auto-generated graph")
 		   x-label x2-label y-label y2-label cblabel z-label;; axis labels
 		   x-range y-range x2-range y2-range ;; axis ranges
-		   ;; add options for log scales?!!?
 		   data-axes ;; which axes to plot each point on.
 		   thumbnail ;; as a thumbnail?
 		   legend-labels (key-vertical "top") (key-horizontal "left") ;; legend labels and location
 		   (legend t)
-		   ;;(type '(:png :svg))
-		   (type '(:png))
+		   (type '(:png)) ;; '(:png :svg))
 		   (width 1280) (height 960) ;; type and size
 		   (debug t) (verbose t)  ;; how much info to print and/or save.
 		   #+darwin (encoding "utf8")
 		   #-darwin (encoding "default")
 		   regression
-		   manual-options
-		   )
-  "General function to plot graphs with gnuplot.
-   *Write a long description here...."
+		   manual-options)
+  "General function to plot graphs with gnuplot."
   ;; If we're given a list of graph types, re-call this same function with the same args for
   ;; each values of the those 'types'.  After that, return.
   (when (listp type)
@@ -181,7 +162,6 @@
   (assert (bl:all-equal (mapcar 'length points)))
   ;; The column count is 1- the number of points because the first number in each list is the values used for the x-axis!!!
   (let ((column-count (1- (length (first points)))))
-	;;(column-count (length (first points))))
     ;; If axes are specified, make sure they all are, o/w put everything on x1y1
     (if data-axes
 	(assert (= (length data-axes) column-count))
@@ -236,7 +216,6 @@
 	   (heatmap s :thumbnail thumbnail :type type :label cblabel))
 	  ((eq graph-type :surface)
 	   (surface s :thumbnail thumbnail :type type :z-label z-label))
-	  ;; Re-name this a line graph...?!?!
 	  ((eq graph-type :2dgraph)
 	   (2d-graph s :thumbnail thumbnail :type type))
 	  ((or (eq graph-type :line-graph) (eq graph-type :line))
@@ -260,8 +239,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Plotting histogram -- not working ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Plotting histograms -- not working")
 
 (defun histogram (values stream &key (bin-width nil) (bin-count nil) min-val max-val thumbnail type)
   "A generic function for plotting histograms."

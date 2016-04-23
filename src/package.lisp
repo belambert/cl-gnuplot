@@ -1,5 +1,3 @@
-
-
 (defpackage :gnuplot
   (:nicknames :gp)
   (:use :common-lisp)
