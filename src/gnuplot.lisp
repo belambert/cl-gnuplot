@@ -1,7 +1,6 @@
-;;; Copyright Ben. Lambert
-;;; ben@benjaminlambert.com
+;;;; Author Ben Lambert
+;;;; ben@benjaminlambert.com
 
-(declaim (optimize (debug 3)))
 (in-package :gnuplot)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -159,7 +158,7 @@
   (when regression
     (setf regression (concatenate 'string filename ".fit.log")))
   ;; Check if the points all have the same number of dimensions
-  (assert (bl:all-equal (mapcar 'length points)))
+  (assert (all-equal (mapcar 'length points)))
   ;; The column count is 1- the number of points because the first number in each list is the values used for the x-axis!!!
   (let ((column-count (1- (length (first points)))))
     ;; If axes are specified, make sure they all are, o/w put everything on x1y1
@@ -169,7 +168,7 @@
     ;; Either make sure we have enough legend labels, or set them to something generic
     (if legend-labels
 	(assert (or (not legend-labels) (= (length legend-labels) column-count)))
-	(setf legend-labels (mapcar (lambda (x) (format nil "Line ~d" x)) (bl:interval 1 column-count))))
+	(setf legend-labels (mapcar (lambda (x) (format nil "Line ~d" x)) (interval 1 column-count))))
   ;; Start constructing the string that we'll use as the file...
   (with-output-to-string (s)
     ;; first do the terminal and type
@@ -232,7 +231,7 @@
 	(print-gnuplot-grid-to-stream points s :n 1 :sort nil)
 	(print-gnuplot-grid-to-stream points s :n column-count))
     ;; Run gnuplot
-    (gnuplot-plot (get-output-stream-string s) :filename (bl:concat filename ".gp") :verbose verbose :debug debug)
+    (gnuplot-plot (get-output-stream-string s) :filename (concat filename ".gp") :verbose verbose :debug debug)
     (values))))
 
 

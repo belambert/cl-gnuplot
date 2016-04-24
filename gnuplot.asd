@@ -19,6 +19,7 @@
     :pathname #P "src/"
     :serial t
     :components
-    ((:file "gnuplot"))))
-  :depends-on (:blambert-util))
+    ((:file "util")
+     (:file "gnuplot"))))
+  :depends-on ())
 
