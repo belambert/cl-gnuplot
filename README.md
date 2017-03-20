@@ -1,6 +1,5 @@
-============
 gnuplot
-============
+=======
 
 Here, I've defined a number of Lisp functions that I've used to convert
 basic data structures in Lisp into gnuplot source files.  This makes it
