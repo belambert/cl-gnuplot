@@ -12,7 +12,6 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :gnuplot)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -291,4 +290,3 @@
    ;; Verify that this is correct...? It may not be.
    (loop for key being the hash-keys of value-table do
    	(format stream "~A ~A~%" key (gethash key value-table)))))
-

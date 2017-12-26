@@ -1,12 +1,10 @@
 ;;-*- Mode: Lisp -*- 
-;;; Author Ben Lambert
-;;; ben@benjaminlambert.com
 
 (asdf:defsystem "gnuplot"
   :description "Plotting gnuplot graphs from Lisp"
   :version "0.1"
   :author "Ben Lambert"
-  :licence "All rights reserved"
+  :licence "Apache-2.0"
   :serial t
   :components
   ((:module 
@@ -22,4 +20,3 @@
     ((:file "util")
      (:file "gnuplot"))))
   :depends-on ())
-
